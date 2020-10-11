@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import DataService from "./services/DataService.js";
 import CitySelect from "./components/CitySelect.js";
 import WeatherBlock from "./components/WeatherBlock.js";
+import Spinner from "react-native-loading-spinner-overlay";
 import * as Location from "expo-location";
 
 const ds = new DataService();
@@ -10,10 +11,15 @@ const ds = new DataService();
 export default function App() {
   const [weather, setWeather] = useState(null);
   const [rejected, setRejected] = useState(false);
+  const [spinner, setSpinner] = useState(false);
 
-  const changeScreen = (weatherData) => {
+  const showWeather = (weatherData) => {
     setRejected(false);
     setWeather(weatherData);
+  };
+
+  const selectCity = () => {
+    setRejected(true);
   };
 
   useEffect(() => {
@@ -21,23 +27,31 @@ export default function App() {
       const { status } = await Location.requestPermissionsAsync();
       if (status !== "granted") {
         setRejected(true);
+      } else {
+        setSpinner(true);
+        const location = await Location.getCurrentPositionAsync({});
+        const lat = location.coords.latitude;
+        const lon = location.coords.longitude;
+        const weatherData = await ds.getCurrentByCoordinates(lat, lon);
+        setWeather(weatherData);
+        setSpinner(false);
       }
-      const location = await Location.getCurrentPositionAsync({});
-      const lat = location.coords.latitude;
-      const lon = location.coords.longitude;
-      const weatherData = await ds.getCurrentByCoordinates(lat, lon);
-      setWeather(weatherData);
     })();
   }, []);
 
-  let block = <Text>Немного терпения...</Text>;
+  let block;
   if (rejected) {
-    block = <CitySelect change={changeScreen} />;
+    block = <CitySelect showWeather={showWeather} />;
   } else if (weather) {
-    block = <WeatherBlock data={weather} />;
+    block = <WeatherBlock data={weather} selectCity={selectCity} />;
   }
 
-  return <View style={styles.container}>{block}</View>;
+  return (
+    <View style={styles.container}>
+      <Spinner visible={spinner} />
+      {block}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

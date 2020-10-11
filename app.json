@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "weatherSRS",
-    "slug": "weatherSRS",
+    "name": "Текущая погода",
+    "slug": "weather",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/splash.png",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

@@ -9,26 +9,34 @@ import {
   Keyboard,
   Dimensions,
 } from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 import DataService from "../services/DataService.js";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ds = new DataService();
 
 export default function CitySelect(props) {
   const [search, setSearch] = useState("");
   const [error, setError] = useState(false);
+  const [spinner, setSpinner] = useState(false);
 
   const onSubmit = async (city) => {
-    const response = await ds.getCurrentByCity(city);
-    if (response.cod !== "404") {
-      props.change(response);
-    } else {
-      setError(true);
+    if (city) {
+      setSpinner(true);
+      const response = await ds.getCurrentByCity(city);
+      if (response.cod !== "404") {
+        props.showWeather(response);
+      } else {
+        setError(true);
+      }
+      setSpinner(false);
     }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.main}>
+        <Spinner visible={spinner} />
         <View style={styles.container}>
           <Text style={styles.text}>
             {error
@@ -47,6 +55,17 @@ export default function CitySelect(props) {
               onSubmit(search);
             }}
           >
+            <LinearGradient
+              colors={["transparent", "#EBEBEB"]}
+              style={{
+                position: "absolute",
+                borderRadius: 20,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+              }}
+            />
             <Text style={styles.text}>ПОДТВЕРДИТЬ</Text>
           </TouchableOpacity>
         </View>
