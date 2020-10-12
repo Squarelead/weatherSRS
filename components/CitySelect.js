@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import DataService from "../services/DataService.js";
-import { LinearGradient } from "expo-linear-gradient";
 
 const ds = new DataService();
 
@@ -55,17 +54,6 @@ export default function CitySelect(props) {
               onSubmit(search);
             }}
           >
-            <LinearGradient
-              colors={["transparent", "#EBEBEB"]}
-              style={{
-                position: "absolute",
-                borderRadius: 20,
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-              }}
-            />
             <Text style={styles.text}>ПОДТВЕРДИТЬ</Text>
           </TouchableOpacity>
         </View>
@@ -118,6 +106,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 20,
     backgroundColor: "#fff",
+    borderWidth: 2,
+    borderColor: "#C4C4C4",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
